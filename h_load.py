@@ -28,6 +28,12 @@ L_Still = []
 L_CP = []
 L_MXC = []
 
+TL_50 = []
+TL_4 = []
+TL_Still = []
+TL_CP = []
+TL_MXC = []
+
 F_50 = []
 F_4 = []
 F_Still = []
@@ -73,22 +79,35 @@ for i in np.arange(len(name)):
     L_CP.append( 0.01*(A*Temp[3] + B)*Len[3] - 0.01*A * b4 * (Len[3]**2)/2)
     L_MXC.append( 0.01*(A*Temp[4] + B)*Len[4] - 0.01*A * b5 * (Len[4]**2)/2)
 
-    F_50.append( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) / ((np.pi * th[i] * (d3[i])**2 * (Temp[0]**2 - Temp[1]**2)) * 1e-2 * 1e3/(32 * Len[0])) )
-    F_4.append( (0.01*(A*Temp[1] + B)*Len[1] - 0.01* A * b2 * (Len[1]**2)/2) / ((np.pi * th[i] * (d3[i])**2 * (Temp[1]**2 - Temp[2]**2)) * 1e-2 *1e3/(32 * Len[1])))
-    F_Still.append( (0.01*(A*Temp[2] + B)*Len[2] - 0.01*A * b3 * (Len[2]**2)/2) / ((np.pi * th[i] * (d3[i])**2 * (Temp[2]**2 - Temp[3]**2)) * 1e-2 * 1e3/(32 * Len[2])))
-    F_CP.append( (0.01*(A*Temp[3] + B)*Len[3] - 0.01*A * b4 * (Len[3]**2)/2) / ((np.pi * th[i] * (d3[i])**2 * (Temp[3]**2 - Temp[4]**2)) * 1e-2 * 1e3/(32 * Len[3])))
-    F_MXC.append( (0.01*(A*Temp[4] + B)*Len[4] - 0.01*A * b5 * (Len[4]**2)/2) / ((np.pi * th[i] * (d3[i])**2 * (Temp[4]**2 - Temp[5]**2)) * 1e-2 * 1e3/(32 * Len[4])))
+    l1 = ( np.power(10, -0.1*( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) ) ) )
+    l2 = ( np.power(10, -0.1*( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) + (0.01*(A*Temp[1] + B)*Len[1] - 0.01* A * b2 * (Len[1]**2)/2) ) ) )
+    l3 = ( np.power(10, -0.1*( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) + (0.01*(A*Temp[1] + B)*Len[1] - 0.01* A * b2 * (Len[1]**2)/2) + ( 0.01*(A*Temp[2] + B)*Len[2] - 0.01*A * b3 * (Len[2]**2)/2) ) ) )
+    l4 = ( np.power(10, -0.1*( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) + (0.01*(A*Temp[1] + B)*Len[1] - 0.01* A * b2 * (Len[1]**2)/2) + ( 0.01*(A*Temp[2] + B)*Len[2] - 0.01*A * b3 * (Len[2]**2)/2) + ( 0.01*(A*Temp[3] + B)*Len[3] - 0.01*A * b4 * (Len[3]**2)/2) ) ) )
+    l5 = ( np.power(10, -0.1*( (0.01*(A*Temp[0] + B)*Len[0] - 0.01*A * b1 * (Len[0]**2)/2) + (0.01*(A*Temp[1] + B)*Len[1] - 0.01* A * b2 * (Len[1]**2)/2) + ( 0.01*(A*Temp[2] + B)*Len[2] - 0.01*A * b3 * (Len[2]**2)/2) + ( 0.01*(A*Temp[3] + B)*Len[3] - 0.01*A * b4 * (Len[3]**2)/2) + ( 0.01*(A*Temp[4] + B)*Len[4] - 0.01*A * b5 * (Len[4]**2)/2) ) ) )
 
+    TL_50.append(1 - l1)
+    TL_4.append(l1 - l2)
+    TL_Still.append(l2 - l3)
+    TL_CP.append(l3 - l4)
+    TL_MXC.append(l4 - l5)
 
     types.append(name[i])
     
 #Plotting
 #plt.figure(figsize=(10, 10))
+F_50 = np.array(P_50) + np.array(TL_50)
+F_4 = np.array(P_4) + np.array(TL_4)
+F_Still = np.array(P_Still) + np.array(TL_Still)
+F_CP = np.array(P_CP) + np.array(TL_CP)
+F_MXC = np.array(P_MXC) + np.array(TL_MXC)
 
-categories = ['50K', '4K', 'Still', 'CP', 'MXC']
+#categories = ['50K', '4K', 'Still', 'CP', 'MXC']
+categories = ['MXC']
 values_HL = np.array([P_50, P_4, P_Still, P_CP, P_MXC])
 values_att = np.array([L_50, L_4, L_Still, L_CP, L_MXC])
-values_F = np.array([F_50, F_4, F_Still, F_CP, F_MXC])
+#values_F = np.array([F_50, F_4, F_Still, F_CP, F_MXC])
+
+values_F = np.array([F_MXC])
 
 # Set up the positions for bars within each category
 positions = 4*np.arange(len(categories))
@@ -106,12 +125,12 @@ for i, type_label in enumerate(types):
 plt.xlabel('Stages')
 #plt.ylabel('Passive heat load (mW)')
 #plt.ylabel('Attenuation (dB)')
-plt.ylabel('Figure of Merit')
-plt.yscale('log')
-plt.title('Coax Co. RF Cables')
+plt.ylabel('Total Heat Load (mW)')
+#plt.yscale('log')
+plt.title('Coax Co. RF Cables (Input MW power of 1 mW)')
 plt.xticks(positions + 0.5*len(name)*bar_width , categories)
 
 plt.legend(ncol=3)
-
+plt.ylim(0, 0.1)
 # Show the plot
 plt.show()
